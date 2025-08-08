@@ -1,11 +1,15 @@
 class Constants:
     @staticmethod
-    def should_build_kb()-> bool:
+    def should_build_vector_db()-> bool:
         return False
 
     @staticmethod
     def cleaned_csv_path() ->str:
        return 'data/cleaned_faqs.csv'
+
+    @staticmethod
+    def env_path() ->str:
+       return '.env'
 
     @staticmethod
     def default_kb_count() -> int:

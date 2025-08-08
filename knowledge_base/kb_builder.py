@@ -6,9 +6,9 @@ import pickle
 from utils.constants import Constants
 
 
-class KnowledgeBaseBuilder:
+class VectorDbBuilder:
     @staticmethod
-    def build_kb():
+    def build_db():
         df = pd.read_csv(Constants.cleaned_csv_path())
 
         documents = (df["Question"] + " " + df["Answer"]).tolist()

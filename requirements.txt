@@ -3,3 +3,4 @@ sentence-transformers>=5.1.0
 faiss-cpu>=1.11.0.post1
 openai>=1.99.3
 dotenv-python>=0.0.1
+streamlit>=1.48.0

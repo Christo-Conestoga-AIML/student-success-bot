@@ -15,32 +15,32 @@ class KbQuestionAnswer:
         self.confidence = confidence
 
 
-class PromptResponse:
-    def __init__(self, kb_response:List[KbQuestionAnswer], prompt_type: PromptType, message: str):
-        self.kb_response = kb_response
+class VectorPromptResponse:
+    def __init__(self, vector_result:List[KbQuestionAnswer], prompt_type: PromptType, message: str):
+        self.vector_results = vector_result
         self.prompt_type=prompt_type
         self.message = message
 
 
 
     @staticmethod
-    def from_kb(kb_response: List[KbQuestionAnswer], confidence: float) -> "PromptResponse":
-        return PromptResponse(
-            kb_response=kb_response,
+    def from_kb(kb_response: List[KbQuestionAnswer], confidence: float) -> "VectorPromptResponse":
+        return VectorPromptResponse(
+            vector_result=kb_response,
             prompt_type=PromptType.FAQ_MATCH,
             message='Okay, I can help you with that.'
         )
 
     @staticmethod
-    def low_confidence() -> "PromptResponse":
-        return PromptResponse(prompt_type=PromptType.LOW_CONFIDENCE, kb_response=[],
-                              message="I'm not sure what you're asking for. Can you be more detailing?"
-                              )
+    def low_confidence() -> "VectorPromptResponse":
+        return VectorPromptResponse(prompt_type=PromptType.LOW_CONFIDENCE, vector_result=[],
+                                    message="I'm not sure what you're asking for. Can you be more detailing?"
+                                    )
 
     @staticmethod
-    def human_support() -> "PromptResponse":
-        return PromptResponse(
-            kb_response=[],
+    def human_support() -> "VectorPromptResponse":
+        return VectorPromptResponse(
+            vector_result=[],
             message="Please follow the given link to book an appointment with a student advisor: https://www.university.edu/student-advisors",
             prompt_type=PromptType.HUMAN_SUPPORT
         )

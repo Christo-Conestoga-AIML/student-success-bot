@@ -1,36 +1,40 @@
-from huggingface_hub.utils._dotenv import load_dotenv
-
 from data_class.prompt_response import PromptType
-from knowledge_base.knowledge_base_helper import KnowledgeBaseHelper
+from knowledge_base.knowledge_base_helper import VectorDBHelper
+from llm_helper.llm_helper import LLMHelper
 from utils.constants import Constants
-from knowledge_base.kb_builder import KnowledgeBaseBuilder
-
+from knowledge_base.kb_builder import VectorDbBuilder
+from dotenv import load_dotenv
+import streamlit as st
 
 def main():
 
     # Build the knowledge base if required(Change boolean value in constants.py if needed)
-    if Constants.should_build_kb():
-        KnowledgeBaseBuilder.build_kb()
+    if Constants.should_build_vector_db():
+        VectorDbBuilder.build_db()
 
     load_dotenv()
 
     # Load the knowledge base
-    knowledge_base_helper = KnowledgeBaseHelper()
-    knowledge_base_helper.load_kb()
+    print('Loading knowledge base...')
+    vector_db_helper = VectorDBHelper()
+    vector_db_helper.load_kb()
+    print('Done')
 
+
+    llm_helper = LLMHelper(context_buffer=[])
 
 
     # Example user query
-    user_query = "I want an appointment with a student advisor"
-    response = knowledge_base_helper.handle_query(user_query)
+    user_query = "How to i pay my fees?"
+    vector_search_response = vector_db_helper.handle_query(user_query)
 
-    if response.prompt_type == PromptType.FAQ_MATCH:
-        for idx, kb_answer in enumerate(response.kb_response, start=1):
-            print(f"{idx}. Q: {kb_answer.question}\n   A: {kb_answer.answer} (Confidence: {kb_answer.confidence:.4f})\n")
+    if vector_search_response.prompt_type == PromptType.FAQ_MATCH:
+
+        llm_response = llm_helper.ask_llm(user_query=user_query, vector_result=vector_search_response.vector_results)
+        print(f"LLM Response: {llm_response}")
+
     else:
-        print(response.message)
-
-
+        print(vector_search_response.message)
 
 
 

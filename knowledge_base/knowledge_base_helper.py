@@ -4,11 +4,11 @@ from typing import List
 import faiss
 from sentence_transformers import SentenceTransformer
 
-from data_class.prompt_response import PromptResponse, KbQuestionAnswer
+from data_class.prompt_response import VectorPromptResponse, KbQuestionAnswer
 from utils.constants import Constants
 
 
-class KnowledgeBaseHelper:
+class VectorDBHelper:
 
     knowledge_base_index = None
     knowledge_base_model = None
@@ -42,7 +42,7 @@ class KnowledgeBaseHelper:
         return responses
 
 
-    def handle_query(self, user_query: str, confidence_threshold: float = Constants.confidence_for_not_related()) -> PromptResponse:
+    def handle_query(self, user_query: str, confidence_threshold: float = Constants.confidence_for_not_related()) -> VectorPromptResponse:
         query_lower = user_query.lower()
 
         # Step 1: Check if human support is needed (keyword based)
@@ -52,7 +52,7 @@ class KnowledgeBaseHelper:
         ]
 
         if any(kw in query_lower for kw in human_keywords):
-            return PromptResponse.human_support()
+            return VectorPromptResponse.human_support()
 
         # Step 2: Get top KB matches (top_k can be >1 for richer responses)
         kb_answers = self.get_faq_response_from_kb(user_query, top_k=Constants.default_kb_count())
@@ -62,8 +62,8 @@ class KnowledgeBaseHelper:
 
         if best_confidence < confidence_threshold:
             # Return all retrieved matches as kb_response with FAQ_MATCH prompt type
-            return PromptResponse.from_kb(kb_answers, best_confidence)
+            return VectorPromptResponse.from_kb(kb_answers, best_confidence)
         else:
             # Low confidence fallback
-            return PromptResponse.low_confidence()
+            return VectorPromptResponse.low_confidence()
 
