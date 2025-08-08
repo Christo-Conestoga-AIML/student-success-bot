@@ -13,7 +13,7 @@ class Constants:
 
     @staticmethod
     def default_kb_count() -> int:
-        return (5)
+        return 15
 
     @staticmethod
     def confidence_for_not_related() -> float:
