@@ -3,12 +3,30 @@ import os, base64
 import streamlit as st
 
 from controller import ChatController, ensure_state  # logic only
+# FIX: your file is `translation.py` at project root, not scripts/translation
+from scripts.translation import translate_text  # ← CHANGED
 
 st.set_page_config(page_title="ABC Student Support Chatbot", page_icon="🎓", layout="centered")
 
 # ---------- State & Controller ----------
 ensure_state()
 controller = ChatController()
+
+# ---------- Sidebar: Language Switcher ----------
+LANG_LABELS = {"en": "English", "fr": "Français", "hi": "हिन्दी"}
+with st.sidebar:
+    st.header("Language")
+    # keep persistent selection
+    if "lang" not in st.session_state:
+        st.session_state.lang = "en"
+    lang = st.radio(
+        "Display language",
+        options=list(LANG_LABELS.keys()),
+        index=list(LANG_LABELS.keys()).index(st.session_state.lang),
+        format_func=lambda k: LANG_LABELS[k],
+    )
+    st.session_state.lang = lang
+    st.caption("Bot answers and suggestions will be shown in the selected language.")
 
 # ---------- Assets (avatars) ----------
 def _b64(path):
@@ -67,7 +85,18 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------- Small UI helpers ----------
+def _t(text: str) -> str:
+    """Translate helper for bot-facing strings based on chosen lang."""
+    try:
+        return translate_text(text, st.session_state.lang)
+    except Exception:
+        return text  # graceful fallback
+
 def render_bubble(role: str, content: str, ts: str | None = None):
+    # Only translate the bot messages; keep user's text as typed
+    if role == "assistant":
+        content = _t(content)
+
     time_html = f'<div class="msg-time">{ts}</div>' if ts else ""
     if role == "user":
         st.markdown(f"""
@@ -96,7 +125,8 @@ st.markdown('<div class="chat-header">ABC Student Support Chatbot</div>', unsafe
 # Body
 st.markdown('<div class="chat-body">', unsafe_allow_html=True)
 if not st.session_state.messages:
-    render_bubble("assistant", "Hi! Ask me about fees, registration, schedules, or student services.", None)
+    welcome = "Hi! Ask me about fees, registration, schedules, or student services."
+    render_bubble("assistant", _t(welcome), None)  # translated welcome
 else:
     for m in st.session_state.messages:
         render_bubble("assistant" if m["role"] == "assistant" else "user", m["content"], m.get("ts"))
@@ -107,17 +137,14 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Footer (suggestions + clear)
 with st.container():
     if st.session_state.next_questions:
-        st.markdown('<div class="suggestion-title">Related questions you might want to ask:</div>', unsafe_allow_html=True)
+        st.markdown(f"<div class='suggestion-title'>{_t('Related questions you might want to ask:')}</div>", unsafe_allow_html=True)
         cols = st.columns(3)
         for i, q in enumerate(st.session_state.next_questions[:6]):
+            # Show translated label, but send the original English query to controller
+            display_q = _t(q)
             with cols[i % 3]:
-                if st.button(q, key=f"suggest_{i}"):
+                if st.button(display_q, key=f"suggest_{i}"):
                     controller.ask_and_respond(q)
-
-    # c1, c2 = st.columns([1,6])
-    # with c1:
-    #     if st.button("Clear Chat"):
-    #         controller.clear()
 
 st.markdown('</div>', unsafe_allow_html=True)  # close chat-card
 
