@@ -114,10 +114,10 @@ with st.container():
                 if st.button(q, key=f"suggest_{i}"):
                     controller.ask_and_respond(q)
 
-    c1, c2 = st.columns([1,6])
-    with c1:
-        if st.button("Clear Chat"):
-            controller.clear()
+    # c1, c2 = st.columns([1,6])
+    # with c1:
+    #     if st.button("Clear Chat"):
+    #         controller.clear()
 
 st.markdown('</div>', unsafe_allow_html=True)  # close chat-card
 
