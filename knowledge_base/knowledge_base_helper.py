@@ -15,8 +15,8 @@ class VectorDBHelper:
     knowledge_base_meta_data = None
 
     def load_kb(self):
-        self.knowledge_base_index = faiss.read_index("data/generated/faq_index.faiss")
-        with open("data/generated/faq_metadata.pkl", "rb") as f:
+        self.knowledge_base_index = faiss.read_index("models/vectors/faq_index.faiss")
+        with open("models/vectors/faq_metadata.pkl", "rb") as f:
             self.knowledge_base_meta_data = pickle.load(f)
 
         # Load embedding model
