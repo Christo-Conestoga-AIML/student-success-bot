@@ -1,5 +1,176 @@
-<h1 id="student-affairs-chatbot-ai-assistant">Student Affairs Chatbot -AI Assistant</h1>
-<p>Group members:</p>
+<h1 id="student-affairs-chatbot-ai-assistant">Student Affairs Chatbot - AI Assistant</h1>
+<h2 id="group-members-">Group members:</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Student ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Christo Pananjickal Baby</td>
+<td>8989796</td>
+</tr>
+<tr>
+<td>Fasalu Rahman Kottaparambu</td>
+<td>8991782</td>
+</tr>
+<tr>
+<td>Srinu Babu Rai</td>
+<td>8994032</td>
+</tr>
+</tbody>
+</table>
+<h2 id="steps-to-run-the-project">Steps to run the project</h2>
+<ol>
+<li>Clone this(<a href="https://github.com/Christo-Conestoga-AIML/student-success-bot.git">https://github.com/Christo-Conestoga-AIML/student-success-bot.git</a>) repo to your local machine(you must have python 3.12 installed)</li>
+<li>The trained models (vectors, logistic regression) is already present in models folder</li>
+<li>To retrain the models, you can simply update the return of should_build_vector_db function in constants class</li>
+<li>To connect with LLM you must create a .env file in root of project and add &quot;OPENAI_API_KEY=your key&quot; </li>
+<li>Create a virtual environment in python using python -m venv env</li>
+<li>Install the requirements using pip install -r requirements.txt</li>
+<li>Now you can run the app.py, which is the starting point of the application</li>
+<li>You can then interact with the chatbot from the auto launched streamlit web app</li>
+</ol>
+<h2 id="about-the-project">About the project</h2>
+<p>A presentation ppt file can be found at documents/Student Affairs Chatbot -AI Assistant.pptx </p>
+<h3 id="problem-statement">Problem statement</h3>
+<p>Students often face delays in getting answers about college policies, registration, fees, mental health, and campus life. Traditional support channels such as emails, calls, and office visits are slow, restricted to office hours, and can be confusing, while staff are overwhelmed by repetitive queries, leaving them with less time to handle serious or urgent issues.</p>
+<h3 id="proposed-solution">Proposed solution</h3>
+<p>We propose a smart, easy-to-use virtual assistant that provides instant answers 24/7, supports multiple languages, and escalates serious or sensitive issues to real human staff when necessary.
+The data corpus is the data scraped from a college website.</p>
+<h2 id="implemented-features">Implemented features</h2>
 <ul>
-<li>Christo Pananjickal Baby</li>
+<li>Sentiment Detection &amp; Escalation</li>
+<li>RAG for Interactions</li>
+<li>Next question prediction</li>
+<li>Multilingual Support</li>
+</ul>
+<h2 id="stake-holders">Stake holders</h2>
+<ul>
+<li>Students</li>
+<li>Student affairs staff</li>
+<li>College</li>
+</ul>
+<h2 id="techincal-vendors">Techincal vendors</h2>
+<ul>
+<li>Open AI</li>
+<li>Google translator</li>
+<li>ABC College Dataset</li>
+</ul>
+<h2 id="impact">Impact</h2>
+<ul>
+<li>24/7 instant support</li>
+<li>Reduces repetitive staff workload</li>
+<li>Multiple languages for inclusivity</li>
+<li>Quick follow-ups with next question suggestions</li>
+</ul>
+<h2 id="nlp-components">NLP components</h2>
+<ul>
+<li><strong>Normalization, Stopword filtering, Stemming</strong> - Converting to lowercase, removing stopwords, words stemming</li>
+<li><strong>Tokenization</strong> - Splitting data and prompt into individual words using NLTK</li>
+<li><strong>Vectorization</strong> - Tokens are transformed into a numerical vector space from which correlated data can be found out using cosine similarity</li>
+</ul>
+<h2 id="prediction-feature">Prediction feature</h2>
+<ul>
+<li>Predicts related questions at end of a conversation</li>
+<li>Uses Logistic Regression with re-ranking (sorting)</li>
+<li>Model trained once and saved</li>
+<li>Faster navigation</li>
+</ul>
+<h1 id="training-and-evaluation-plots">Training and Evaluation Plots</h1>
+<p>This section shows the performance of the Logistic Regression model for predicting the next questions in the Student Affairs Chatbot. Each plot is explained with interpretation and examples.</p>
+<hr>
+<h3 id="1-accuracy-curve">1. Accuracy Curve</h3>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/plots/lr_accuracy_curve.png" alt="Accuracy Curve"></p>
+<p><strong>What it shows:</strong><br>This chart shows how well the Logistic Regression model performs on the training set vs the validation set over multiple epochs (iterations).</p>
+<p><strong>Interpretation:</strong>  </p>
+<ul>
+<li>Blue line: Training accuracy — how well the model predicts on the data it learned from.  </li>
+<li>Orange line: Validation accuracy — how well it predicts on unseen data.  </li>
+<li>Both lines are very high (~97%), indicating consistent accuracy.</li>
+</ul>
+<p><strong>Example:</strong><br>If a student asks &quot;How do I pay my tuition fees?&quot;, the model correctly ranks the best next questions about 97 times out of 100 for both training and new data.</p>
+<hr>
+<h3 id="2-precision-recall-curve">2. Precision–Recall Curve</h3>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/plots/lr_pr.png" alt="Precision–Recall Curve"></p>
+<p><strong>What it shows:</strong><br>Precision = of the questions predicted as “good suggestions,” how many were actually good.<br>Recall = of all good suggestions in reality, how many the model successfully found.<br>The curve shows the trade-off between these two.</p>
+<p><strong>Key metric:</strong><br>AP (Average Precision) = 0.912 → high precision while still capturing most relevant questions.</p>
+<p><strong>Example:</strong><br>If we suggest 10 “next questions” and 9 are actually useful, precision is high. Recall is high if most useful ones are included.</p>
+<hr>
+<h3 id="3-roc-curve">3. ROC Curve</h3>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/plots/lr_roc.png" alt="ROC Curve"></p>
+<p><strong>What it shows:</strong><br>Plots True Positive Rate (sensitivity) vs False Positive Rate (false alarms).<br>The diagonal orange dashed line represents random guessing (AUC=0.5).<br>Our curve is above it with AUC=0.980 → nearly perfect.</p>
+<p><strong>Example:</strong><br>The model can distinguish “good” next questions from irrelevant ones almost perfectly.</p>
+<hr>
+<h3 id="4-confusion-matrix">4. Confusion Matrix</h3>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/plots/lr_confusion.png" alt="Confusion Matrix"></p>
+<p><strong>What it shows:</strong><br>Compares predicted labels vs actual labels:  </p>
+<ul>
+<li>Top-left (661): Correctly predicted negatives (irrelevant questions identified correctly)  </li>
+<li>Top-right (10): False positives (predicted as relevant but weren’t)  </li>
+<li>Bottom-left (11): False negatives (missed relevant ones)  </li>
+<li>Bottom-right (63): Correctly predicted positives</li>
+</ul>
+<p><strong>Example:</strong><br>Out of all actual “good” suggestions, the model missed 11 and incorrectly suggested 10 bad ones.</p>
+<hr>
+<h3 id="5-probability-histogram">5. Probability Histogram</h3>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/plots/lr_prob_hist.png" alt="Probability Histogram"></p>
+<p><strong>What it shows:</strong><br>Distribution of predicted probabilities for class 1 (relevant question).  </p>
+<ul>
+<li>Blue bars = actual positives → mostly near 1.0 (high confidence)  </li>
+<li>Orange bars = actual negatives → mostly near 0.0 (high confidence)</li>
+</ul>
+<p><strong>Example:</strong><br>If the model is 95% confident a question is relevant, it’s almost always correct.</p>
+<hr>
+<h3 id="6-training-loss-curve">6. Training Loss Curve</h3>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/plots/lr_train_curve.png" alt="Training Loss Curve"></p>
+<p><strong>What it shows:</strong><br>This chart shows how Log-Loss changes during training for both training and validation sets.</p>
+<p><strong>Interpretation:</strong>  </p>
+<ul>
+<li>Blue line: Training log-loss — error on the training data  </li>
+<li>Orange line: Validation log-loss — error on unseen data  </li>
+<li>Both lines stabilize at very low values (~0.095–0.097)  </li>
+<li>Small gap between lines → no overfitting</li>
+</ul>
+<p><strong>Example:</strong><br>If a student asks &quot;How can I access funded training?&quot;, the model’s confidence in ranking correct next questions is high and stable.</p>
+<hr>
+<h3 id="7-demo-ranking">7. Demo Ranking</h3>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/plots/lr_demo_rank.png" alt="Demo Ranking"></p>
+<p><strong>What it shows:</strong><br>An example of how the model ranks suggested next questions for a given student query.<br>The most relevant suggestions appear at the top, demonstrating the practical effectiveness of the model.</p>
+<h2 id="prediction-evaluation-metrics">Prediction evaluation metrics</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accuracy</td>
+<td>97.18%</td>
+</tr>
+<tr>
+<td>Precision</td>
+<td>86.30%</td>
+</tr>
+<tr>
+<td>Recall</td>
+<td>85.13%</td>
+</tr>
+<tr>
+<td>F1 Score</td>
+<td>85.71%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="software-architecture">Software architecture</h2>
+<p><img src="https://raw.githubusercontent.com/Christo-Conestoga-AIML/student-success-bot/refs/heads/master/images/SoftwareArchitecture.png" alt="Software Architecure"></p>
+<h2 id="future-plans">Future plans</h2>
+<ul>
+<li>Add analytics dashboard - top rated questions, usage, prediction performance, response efficiency, find areas to improve</li>
+<li>Expand multilingual support</li>
+<li>Integrate with college student portal</li>
 </ul>
